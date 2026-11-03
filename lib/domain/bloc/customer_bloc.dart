@@ -4,23 +4,25 @@ import 'package:optional/optional.dart';
 import 'package:rxdart/rxdart.dart';
 
 class CustomerBloc {
+  CustomerBloc(this._repository);
+
   final BehaviorSubject<Customer> _subject = BehaviorSubject<Customer>();
 
   final BehaviorSubject<List<Customer>> _subjectList =
       BehaviorSubject<List<Customer>>();
 
-  final CustomerMemoryRepository _repository = CustomerMemoryRepository();
+  final CustomerRepository _repository;
 
-  void add(Customer entity) async {
-    _repository.add(entity);
+  Future<void> add(Customer entity) async {
+    await _repository.add(entity);
   }
 
-  void update(Customer entity) async {
-    _repository.update(entity);
+  Future<void> update(Customer entity) async {
+    await _repository.update(entity);
   }
 
-  void delete(List<Customer> entitys) async {
-    _repository.delete(entitys);
+  Future<void> delete(List<Customer> entitys) async {
+    await _repository.delete(entitys);
   }
 
   void getCustomerById(int id) async {

@@ -1,9 +1,12 @@
+import 'package:dart_flutter_example/data/repository/customer_repository.dart';
 import 'package:dart_flutter_example/domain/bloc/customer_bloc.dart';
-import 'package:dart_flutter_example/domain/controllers/strategy/update_customer/reload_customer_update.dart';
 import 'package:dart_flutter_example/domain/entity/customer.dart';
 import 'package:dart_flutter_example/domain/event/customer_item_event.dart';
 import 'package:dart_flutter_example/domain/event/update_customer_event.dart';
+import 'package:dart_flutter_example/presentation/controllers/strategy/update_customer/reload_customer_update.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 
 import '../../customer/customer_see_screen.dart';
 import '../../customer/customer_update_screen.dart';
@@ -16,11 +19,12 @@ class CustomerList extends StatefulWidget {
 }
 
 class CustomerListState extends State<CustomerList> {
-  final CustomerBloc _bloc = CustomerBloc();
+  late final CustomerBloc _bloc;
 
   @override
   void initState() {
     super.initState();
+    _bloc = CustomerBloc(context.read<CustomerRepository>());
     _bloc.getCustomers();
   }
 
@@ -49,30 +53,31 @@ class CustomerListState extends State<CustomerList> {
           ],
         ),
         Expanded(
-            child: StreamBuilder<List<Customer>>(
-          stream: _bloc.customerListStream,
-          builder: (context, AsyncSnapshot<List<Customer>> snapshot) {
-            /// caso de uso para una swich expretions
-            Widget result = _buildLoadingWidget(context);
+          child: StreamBuilder<List<Customer>>(
+            stream: _bloc.customerListStream,
+            builder: (context, AsyncSnapshot<List<Customer>> snapshot) {
+              /// caso de uso para una swich expretions
+              Widget result = _buildLoadingWidget(context);
 
-            ///Si hay stream con data
-            if (snapshot.hasData && snapshot.data != null) {
-              result = _buildDataWidget(context, snapshot.data!);
-            }
+              ///Si hay stream con data
+              if (snapshot.hasData && snapshot.data != null) {
+                result = _buildDataWidget(context, snapshot.data!);
+              }
 
-            ///Si hay un error
-            if (snapshot.hasError) {
-              result = _buildErrorWidget(context, snapshot.error!);
-            }
+              ///Si hay un error
+              if (snapshot.hasError) {
+                result = _buildErrorWidget(context, snapshot.error!);
+              }
 
-            ///Si no hay data
-            if (!snapshot.hasData) {
-              result = _buildLoadingWidget(context);
-            }
+              ///Si no hay data
+              if (!snapshot.hasData) {
+                result = _buildLoadingWidget(context);
+              }
 
-            return result;
-          },
-        ))
+              return result;
+            },
+          ),
+        ),
       ],
     );
   }
@@ -112,14 +117,20 @@ class CustomerListState extends State<CustomerList> {
             onSelected: (CustomerItemEvent val) {
               switch (val.type) {
                 case CustomerItemEvent.EVENT_SEE:
-                  Navigator.pushNamed(context, SeeCustomerScreen.routeName,
-                      arguments: val.customer);
+                  context.push(
+                    SeeCustomerScreen.routeName,
+                    extra: val.customer,
+                  );
                   break;
 
                 case CustomerItemEvent.EVENT_UPDATE:
-                  Navigator.pushNamed(context, UpdateCustomerScreen.routeName,
-                      arguments: UpdateCustomerEvent(
-                          val.customer, ReloadCustomerUpdate.DATA_STRATEGY));
+                  context.push(
+                    UpdateCustomerScreen.routeName,
+                    extra: UpdateCustomerEvent(
+                      val.customer,
+                      ReloadCustomerUpdate.DATA_STRATEGY,
+                    ),
+                  );
                   break;
 
                 case CustomerItemEvent.EVENT_DELETE:
@@ -144,8 +155,7 @@ class CustomerListState extends State<CustomerList> {
             ],
           ),
           onTap: () {
-            Navigator.pushNamed(context, SeeCustomerScreen.routeName,
-                arguments: data);
+            context.push(SeeCustomerScreen.routeName, extra: data);
           },
         );
       }).toList(),
@@ -174,7 +184,7 @@ class CustomerListState extends State<CustomerList> {
   //           TextButton(
   //             child: const Text('Cancel'),
   //             onPressed: () {
-  //               Navigator.of(dialogContext).pop();
+  //                 dialogContext.pop();
   //             },
   //           ),
   //           TextButton(
@@ -187,7 +197,7 @@ class CustomerListState extends State<CustomerList> {
   //               //this.setState(() => this._customers.removeWhere((val) => val == customer));
   //
   //               /// cerrar el dialog
-  //               Navigator.of(dialogContext).pop();
+  //                 dialogContext.pop();
   //
   //               await _showConfirmDialog(
   //                   context, "Se ha eliminado un cliente.");
@@ -222,7 +232,7 @@ class CustomerListState extends State<CustomerList> {
                     groupValue: _currVal,
                     value: 1,
                     onChanged: (val) {
-                      setState(() => _currVal = val as int?);
+                      setState(() => _currVal = val);
                     },
                   ),
                   RadioListTile(
@@ -230,13 +240,15 @@ class CustomerListState extends State<CustomerList> {
                     groupValue: _currVal,
                     value: 2,
                     onChanged: (val) {
-                      setState(() => _currVal = val as int?);
+                      setState(() => _currVal = val);
                     },
                   ),
                   TextField(
                     autofocus: true,
                     decoration: const InputDecoration(
-                        labelText: 'Valor', hintText: 'eg. 010203'),
+                      labelText: 'Valor',
+                      hintText: 'eg. 010203',
+                    ),
                     onChanged: (value) {
                       _currText = value;
                     },
@@ -249,7 +261,7 @@ class CustomerListState extends State<CustomerList> {
             TextButton(
               child: const Text('Cancel'),
               onPressed: () {
-                Navigator.of(context).pop();
+                context.pop();
               },
             ),
             TextButton(
@@ -257,12 +269,12 @@ class CustomerListState extends State<CustomerList> {
               onPressed: () {
                 if (_currVal == 1) {
                   _bloc.getCustomersByCode(_currText);
-                  Navigator.of(context).pop();
+                  context.pop();
                 }
 
                 if (_currVal == 2) {
                   _bloc.getCustomersByName(_currText.toUpperCase());
-                  Navigator.of(context).pop();
+                  context.pop();
                 }
               },
             ),

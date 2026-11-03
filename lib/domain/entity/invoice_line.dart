@@ -11,31 +11,40 @@ class InvoiceLine {
   String? createdAt;
   String? updatedAt;
 
-  InvoiceLine(this.invoiceLineId, this.invoice, this.description, this.unit,
-      this.itemAmt, this.totalAmt, this.status, this.createdAt, this.updatedAt);
+  InvoiceLine(
+    this.invoiceLineId,
+    this.invoice,
+    this.description,
+    this.unit,
+    this.itemAmt,
+    this.totalAmt,
+    this.status,
+    this.createdAt,
+    this.updatedAt,
+  );
 
   InvoiceLine.fromJson(Map<String, Object> json)
-      : invoiceLineId = json['invoiceLineId'] as int,
-        invoice = json['invoice'] as Invoice,
-        description = json['description'] as String,
-        unit = json['unit'] as int,
-        itemAmt = json['itemAmt'] as double,
-        totalAmt = json['totalAmt'] as double,
-        status = json['status'] as String,
-        createdAt = json['createdAt'] as String,
-        updatedAt = json['updatedAt'] as String;
+    : invoiceLineId = json['invoiceLineId'] as int,
+      invoice = json['invoice'] as Invoice,
+      description = json['description'] as String,
+      unit = json['unit'] as int,
+      itemAmt = json['itemAmt'] as double,
+      totalAmt = json['totalAmt'] as double,
+      status = json['status'] as String,
+      createdAt = json['createdAt'] as String,
+      updatedAt = json['updatedAt'] as String;
 
   Map<String, Object> toJson() => {
-        'invoiceLineId': invoiceLineId as int,
-        'invoice': invoice as Invoice,
-        'description': description as String,
-        'unit': unit as int,
-        'itemAmt': itemAmt as double,
-        'totalAmt': totalAmt as double,
-        'status': status as String,
-        'createdAt': createdAt as String,
-        'updatedAt': updatedAt as String,
-      };
+    'invoiceLineId': invoiceLineId as int,
+    'invoice': invoice as Invoice,
+    'description': description as String,
+    'unit': unit as int,
+    'itemAmt': itemAmt as double,
+    'totalAmt': totalAmt as double,
+    'status': status as String,
+    'createdAt': createdAt as String,
+    'updatedAt': updatedAt as String,
+  };
 
   @override
   String toString() {

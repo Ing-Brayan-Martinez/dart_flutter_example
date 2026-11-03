@@ -1,22 +1,23 @@
 import 'package:dart_flutter_example/presentation/screens/data/data_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
-import '../drawer_delegate.dart';
+import 'drawer_delegate.dart';
 
 class HomeDrawerDelegate implements DrawerDelegate {
   @override
   void navigateToHome(BuildContext context) {
-    Navigator.of(context).pop();
+    context.pop();
   }
 
   @override
   void navigateToCustomer(BuildContext context) {
-    Navigator.pushNamed(context, DataScreen.routeName, arguments: 0);
+    context.push(DataScreen.routeName, extra: 0);
   }
 
   @override
   void navigateToInvoiced(BuildContext context) {
-    Navigator.pushNamed(context, DataScreen.routeName, arguments: 1);
+    context.push(DataScreen.routeName, extra: 1);
   }
 
   @override

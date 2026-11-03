@@ -1,4 +1,4 @@
-import 'package:dart_flutter_example/domain/controllers/delegated/drawer_delegate.dart';
+import 'package:dart_flutter_example/presentation/controllers/delegated/drawer_delegate.dart';
 import 'package:flutter/material.dart';
 
 class ApplicationDrawer extends StatefulWidget {
@@ -30,16 +30,14 @@ class ApplicationDrawerState extends State<ApplicationDrawer>
               backgroundColor: Theme.of(context).platform == TargetPlatform.iOS
                   ? Colors.blue
                   : Colors.white,
-              child: const Text(
-                "A",
-                style: TextStyle(fontSize: 40.0),
-              ),
+              child: const Text("A", style: TextStyle(fontSize: 40.0)),
             ),
             decoration: const BoxDecoration(
-                image: DecorationImage(
-              image: ExactAssetImage('assets/astronauta.jpg'),
-              fit: BoxFit.cover,
-            )),
+              image: DecorationImage(
+                image: ExactAssetImage('assets/astronauta.jpg'),
+                fit: BoxFit.cover,
+              ),
+            ),
           ),
           ListTile(
             leading: const Icon(Icons.home),

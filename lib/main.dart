@@ -1,6 +1,9 @@
-import 'package:dart_flutter_example/presentation/screens/data/data_screen.dart';
-import 'package:dart_flutter_example/presentation/screens/home/home_screen.dart';
+import 'package:dart_flutter_example/presentation/routes/app_routes.dart';
+import 'package:dart_flutter_example/presentation/theme/app_theme.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import 'presentation/provider/app_provider.dart';
 
 /// Correr la aplicación
 void main() => runApp(const AppWidget());
@@ -11,14 +14,13 @@ class AppWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      locale: const Locale("es"),
-      theme: ThemeData(primarySwatch: Colors.blue),
-      initialRoute: HomeScreen.routeName,
-      routes: {
-        HomeScreen.routeName: (context) => const HomeScreen(),
-        DataScreen.routeName: (context) => const DataScreen()
-      },
+    return MultiProvider(
+      providers: appProviders,
+      child: MaterialApp.router(
+        locale: const Locale("es"),
+        theme: AppTheme.lightTheme,
+        routerConfig: AppRoutes.router,
+      ),
     );
   }
 }

@@ -1,23 +1,24 @@
-import 'package:dart_flutter_example/domain/controllers/delegated/drawer/data_drawer_delegate.dart';
 import 'package:dart_flutter_example/domain/controllers/observer/observer.dart';
 import 'package:dart_flutter_example/domain/controllers/observer/observer_action.dart';
 import 'package:dart_flutter_example/domain/controllers/observer/observer_event.dart';
 import 'package:dart_flutter_example/domain/controllers/observer/observer_singlenton.dart';
-import 'package:dart_flutter_example/domain/controllers/strategy/create_customer/reload_customer_create.dart';
 import 'package:dart_flutter_example/domain/event/create_event.dart';
+import 'package:dart_flutter_example/presentation/controllers/delegated/data_drawer_delegate.dart';
+import 'package:dart_flutter_example/presentation/controllers/strategy/create_customer/reload_customer_create.dart';
 import 'package:dart_flutter_example/presentation/screens/customer/customer_create_screen.dart';
 import 'package:dart_flutter_example/presentation/screens/data/component/customer_list.dart';
 import 'package:dart_flutter_example/presentation/screens/data/component/invoice_list.dart';
 import 'package:dart_flutter_example/presentation/screens/invoice/invoice_create_screen.dart';
 import 'package:dart_flutter_example/presentation/screens/share/application_drawer.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class DataScreen extends StatefulWidget {
   static const routeName = '/data';
 
-  const DataScreen({
-    Key? key,
-  }) : super(key: key);
+  final int initialTab;
+
+  const DataScreen({Key? key, this.initialTab = 0}) : super(key: key);
 
   @override
   DataScreenState createState() => DataScreenState();
@@ -33,9 +34,12 @@ class DataScreenState extends State<DataScreen>
   void initState() {
     super.initState();
 
-    _controller =
-        TabController(length: 2, vsync: this, initialIndex: _currentIndex!);
-    _controller.animateTo(_currentIndex!);
+    _currentIndex = widget.initialTab;
+    _controller = TabController(
+      length: 2,
+      vsync: this,
+      initialIndex: _currentIndex!,
+    );
 
     _observer = SinglentonObserver.get();
     _observer?.subscribe((ObserverAction event) {
@@ -64,56 +68,49 @@ class DataScreenState extends State<DataScreen>
 
   @override
   Widget build(BuildContext context) {
-    _currentIndex = ModalRoute.of(context)?.settings.arguments as int?;
-    _controller.animateTo(_currentIndex!);
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Sci Fi Space'),
+        actions: <Widget>[
+          PopupMenuButton(
+            onSelected: (String val) {
+              if (val == CreateEvent.EVENT_INVOICE) {
+                context.push(CreateInvoiceScreen.routeName);
+              }
 
-    return DefaultTabController(
-      length: 2,
-      child: Scaffold(
-        appBar: AppBar(
-          title: const Text('Sci Fi Space'),
-          actions: <Widget>[
-            PopupMenuButton(
-              onSelected: (String val) {
-                if (val == CreateEvent.EVENT_INVOICE) {
-                  Navigator.pushNamed(context, CreateInvoiceScreen.routeName);
-                }
-
-                if (val == CreateEvent.EVENT_CUSTOMER) {
-                  Navigator.pushNamed(context, CreateCustomerScreen.routeName,
-                      arguments: ReloadCustomerCreate.DATA_STRATEGY);
-                }
-              },
-              icon: const Icon(Icons.more_vert),
-              itemBuilder: (context) => [
-                const PopupMenuItem(
-                  value: CreateEvent.EVENT_CUSTOMER,
-                  child: Text("Crear Cliente"),
-                ),
-                const PopupMenuItem(
-                  value: CreateEvent.EVENT_INVOICE,
-                  child: Text("Crear Factura"),
-                ),
-              ],
-            )
-          ],
-          bottom: TabBar(
-            controller: DefaultTabController.of(context),
-            tabs: const <Widget>[
-              Tab(text: 'Clientes'),
-              Tab(text: 'Facturas'),
+              if (val == CreateEvent.EVENT_CUSTOMER) {
+                context.push(
+                  CreateCustomerScreen.routeName,
+                  extra: ReloadCustomerCreate.DATA_STRATEGY,
+                );
+              }
+            },
+            icon: const Icon(Icons.more_vert),
+            itemBuilder: (context) => [
+              const PopupMenuItem(
+                value: CreateEvent.EVENT_CUSTOMER,
+                child: Text("Crear Cliente"),
+              ),
+              const PopupMenuItem(
+                value: CreateEvent.EVENT_INVOICE,
+                child: Text("Crear Factura"),
+              ),
             ],
           ),
-        ),
-        body: TabBarView(
-          controller: DefaultTabController.of(context),
-          children: const <Widget>[
-            CustomerList(),
-            InvoiceList(),
+        ],
+        bottom: TabBar(
+          controller: _controller,
+          tabs: const <Widget>[
+            Tab(text: 'Clientes'),
+            Tab(text: 'Facturas'),
           ],
         ),
-        drawer: ApplicationDrawer(delegate: DataDrawerDelegated()),
       ),
+      body: TabBarView(
+        controller: _controller,
+        children: const <Widget>[CustomerList(), InvoiceList()],
+      ),
+      drawer: ApplicationDrawer(delegate: DataDrawerDelegated()),
     );
   }
 }

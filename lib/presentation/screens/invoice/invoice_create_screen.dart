@@ -26,23 +26,29 @@ class _CreateInvoiceScreenState extends State<CreateInvoiceScreen> {
           child: Column(
             children: <Widget>[
               SimpleDialogOption(
-                  child: TextField(
-                autofocus: true,
-                decoration: const InputDecoration(
-                    labelText: 'Codigo', hintText: 'eg. 01010102'),
-                onChanged: (value) {
-                  //_code = value;
-                },
-              )),
+                child: TextField(
+                  autofocus: true,
+                  decoration: const InputDecoration(
+                    labelText: 'Codigo',
+                    hintText: 'eg. 01010102',
+                  ),
+                  onChanged: (value) {
+                    //_code = value;
+                  },
+                ),
+              ),
               SimpleDialogOption(
-                  child: TextField(
-                autofocus: true,
-                decoration: const InputDecoration(
-                    labelText: 'Nombre', hintText: 'eg. Beco C.A'),
-                onChanged: (value) {
-                  //_name = value;
-                },
-              )),
+                child: TextField(
+                  autofocus: true,
+                  decoration: const InputDecoration(
+                    labelText: 'Nombre',
+                    hintText: 'eg. Beco C.A',
+                  ),
+                  onChanged: (value) {
+                    //_name = value;
+                  },
+                ),
+              ),
             ],
           ),
         ),

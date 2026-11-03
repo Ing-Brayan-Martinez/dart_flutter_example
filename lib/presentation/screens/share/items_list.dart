@@ -19,7 +19,7 @@ class ItemsListState extends State<ItemsList> {
     'Melocoton',
     'Tamarindo'
         'Mora',
-    'Guayaba'
+    'Guayaba',
   ];
 
   void _onSelectedItem(dynamic val) {}
@@ -55,30 +55,29 @@ class ItemsListState extends State<ItemsList> {
         Expanded(
           child: ListView(
             children: _frutas
-                .map((data) => ListTile(
-                      title: Text(data),
-                      trailing: PopupMenuButton(
-                        onSelected: _onSelectedItem,
-                        icon: const Icon(Icons.more_vert),
-                        itemBuilder: (context) => [
-                          PopupMenuItem(
-                            value: data,
-                            child: const Text("Ver"),
-                          ),
-                          PopupMenuItem(
-                            value: data,
-                            child: const Text("Eliminar"),
-                          ),
-                          PopupMenuItem(
-                            value: data,
-                            child: const Text("Compartir"),
-                          ),
-                        ],
-                      ),
-                    ))
+                .map(
+                  (data) => ListTile(
+                    title: Text(data),
+                    trailing: PopupMenuButton(
+                      onSelected: _onSelectedItem,
+                      icon: const Icon(Icons.more_vert),
+                      itemBuilder: (context) => [
+                        PopupMenuItem(value: data, child: const Text("Ver")),
+                        PopupMenuItem(
+                          value: data,
+                          child: const Text("Eliminar"),
+                        ),
+                        PopupMenuItem(
+                          value: data,
+                          child: const Text("Compartir"),
+                        ),
+                      ],
+                    ),
+                  ),
+                )
                 .toList(),
           ),
-        )
+        ),
       ],
     );
   }

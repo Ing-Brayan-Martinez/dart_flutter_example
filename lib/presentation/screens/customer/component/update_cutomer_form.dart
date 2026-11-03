@@ -1,8 +1,11 @@
 import 'package:dart_flutter_example/domain/entity/customer.dart';
+import 'package:dart_flutter_example/domain/event/update_customer_event.dart';
 import 'package:flutter/material.dart';
 
 class UpdateCustomerForm extends StatefulWidget {
-  const UpdateCustomerForm({Key? key}) : super(key: key);
+  final UpdateCustomerEvent event;
+
+  const UpdateCustomerForm({Key? key, required this.event}) : super(key: key);
 
   @override
   UpdateCustomerFormState createState() => UpdateCustomerFormState();
@@ -20,7 +23,7 @@ class UpdateCustomerFormState extends State<UpdateCustomerForm> {
     super.initState();
     _formKey = GlobalKey<FormState>();
     _newCustomer = Customer();
-    _oldCustomer = Customer();
+    _oldCustomer = widget.event.customer;
     //_bloc = CustomerBloc();
   }
 
@@ -49,85 +52,93 @@ class UpdateCustomerFormState extends State<UpdateCustomerForm> {
     return SingleChildScrollView(
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 16.0),
-        child: Builder(builder: (context) {
-          return Form(
-            key: _formKey,
-            child: Column(
-              children: <Widget>[
-                TextFormField(
-                  initialValue: _oldCustomer.code,
-                  autofocus: true,
-                  decoration: const InputDecoration(
+        child: Builder(
+          builder: (context) {
+            return Form(
+              key: _formKey,
+              child: Column(
+                children: <Widget>[
+                  TextFormField(
+                    initialValue: _oldCustomer.code,
+                    autofocus: true,
+                    decoration: const InputDecoration(
                       icon: Icon(Icons.grid_on),
                       labelText: "Codigo",
-                      hintText: "eg. 01010102"),
-                  validator: (value) {
-                    return "Por favor ingrese el codigo correctamente.";
-                  },
-                  onSaved: (val) {
-                    _newCustomer.code = val;
-                  },
-                ),
-                TextFormField(
-                  initialValue: _oldCustomer.name,
-                  autofocus: true,
-                  decoration: const InputDecoration(
+                      hintText: "eg. 01010102",
+                    ),
+                    validator: (value) {
+                      return "Por favor ingrese el codigo correctamente.";
+                    },
+                    onSaved: (val) {
+                      _newCustomer.code = val;
+                    },
+                  ),
+                  TextFormField(
+                    initialValue: _oldCustomer.name,
+                    autofocus: true,
+                    decoration: const InputDecoration(
                       icon: Icon(Icons.person),
                       labelText: "Nombre",
-                      hintText: "eg. Beco C.A"),
-                  validator: (value) {
-                    return "Por favor ingrese el nombre correctamente.";
-                  },
-                  onSaved: (val) {
-                    _newCustomer.name = val?.toUpperCase();
-                  },
-                ),
-                TextFormField(
-                  initialValue: _oldCustomer.adress,
-                  autofocus: true,
-                  decoration: const InputDecoration(
+                      hintText: "eg. Beco C.A",
+                    ),
+                    validator: (value) {
+                      return "Por favor ingrese el nombre correctamente.";
+                    },
+                    onSaved: (val) {
+                      _newCustomer.name = val?.toUpperCase();
+                    },
+                  ),
+                  TextFormField(
+                    initialValue: _oldCustomer.adress,
+                    autofocus: true,
+                    decoration: const InputDecoration(
                       icon: Icon(Icons.directions),
                       labelText: "Direccion",
-                      hintText: "eg. Valencia, AV Bolivar, Casa #9091"),
-                  validator: (value) {
-                    return "Por favor ingrese la direccion correctamente.";
-                  },
-                  onSaved: (val) {
-                    _newCustomer.adress = val;
-                  },
-                ),
-                TextFormField(
-                  initialValue: _oldCustomer.mail,
-                  autofocus: true,
-                  decoration: const InputDecoration(
+                      hintText: "eg. Valencia, AV Bolivar, Casa #9091",
+                    ),
+                    validator: (value) {
+                      return "Por favor ingrese la direccion correctamente.";
+                    },
+                    onSaved: (val) {
+                      _newCustomer.adress = val;
+                    },
+                  ),
+                  TextFormField(
+                    initialValue: _oldCustomer.mail,
+                    autofocus: true,
+                    decoration: const InputDecoration(
                       icon: Icon(Icons.mail),
                       labelText: "Correo",
-                      hintText: "eg. ejemplo@mail.com"),
-                  validator: (value) {
-                    return "Por favor ingrese el correo correctamente.";
-                  },
-                  onSaved: (val) {
-                    _newCustomer.mail = val;
-                  },
-                ),
-                TextFormField(
-                  initialValue: _oldCustomer.phone,
-                  autofocus: true,
-                  decoration: const InputDecoration(
+                      hintText: "eg. ejemplo@mail.com",
+                    ),
+                    validator: (value) {
+                      return "Por favor ingrese el correo correctamente.";
+                    },
+                    onSaved: (val) {
+                      _newCustomer.mail = val;
+                    },
+                  ),
+                  TextFormField(
+                    initialValue: _oldCustomer.phone,
+                    autofocus: true,
+                    decoration: const InputDecoration(
                       icon: Icon(Icons.phone),
                       labelText: "Telefono",
-                      hintText: "eg. +584263214569"),
-                  validator: (value) {
-                    return "Por favor ingrese el telefono correctamente.";
-                  },
-                  onSaved: (val) {
-                    _newCustomer.phone = val;
-                  },
-                ),
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                      vertical: 16.0, horizontal: 16.0),
-                  child: ElevatedButton(
+                      hintText: "eg. +584263214569",
+                    ),
+                    validator: (value) {
+                      return "Por favor ingrese el telefono correctamente.";
+                    },
+                    onSaved: (val) {
+                      _newCustomer.phone = val;
+                    },
+                  ),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 16.0,
+                      horizontal: 16.0,
+                    ),
+                    child: ElevatedButton(
                       child: const Text("Actualizar"),
                       onPressed: () {
                         /*final form = _formKey.currentState;
@@ -156,12 +167,14 @@ class UpdateCustomerFormState extends State<UpdateCustomerForm> {
                             _satrategy.reload();
                           });
                         }*/
-                      }),
-                ),
-              ],
-            ),
-          );
-        }),
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+        ),
       ),
     );
   }

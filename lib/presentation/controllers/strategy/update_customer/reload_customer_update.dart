@@ -1,8 +1,7 @@
-import 'package:dart_flutter_example/domain/controllers/strategy/create_customer/reload_customer_from_data_strategy.dart';
-import 'package:dart_flutter_example/domain/controllers/strategy/update_customer/reload_customer_from_see_customer_strategy.dart';
+import 'package:dart_flutter_example/domain/controllers/strategy/reload_strategy.dart';
+import 'package:dart_flutter_example/presentation/controllers/strategy/create_customer/reload_customer_from_data_strategy.dart';
+import 'package:dart_flutter_example/presentation/controllers/strategy/update_customer/reload_customer_from_see_customer_strategy.dart';
 import 'package:flutter/material.dart';
-
-import '../reload_strategy.dart';
 
 class ReloadCustomerUpdate implements ReloadStrategy {
   static const String SEE_STRATEGY = "See";

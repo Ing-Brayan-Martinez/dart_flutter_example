@@ -7,15 +7,16 @@ import 'package:flutter_test/flutter_test.dart';
 void main() {
   test('Customer Encode', () {
     Customer co = Customer.from(
-        1,
-        'fff',
-        'brayan',
-        'valencia',
-        'brayanmartinez827@gmail.com',
-        '+58426649380',
-        'Y',
-        DateTime.now(),
-        DateTime.now());
+      1,
+      'fff',
+      'brayan',
+      'valencia',
+      'brayanmartinez827@gmail.com',
+      '+58426649380',
+      'Y',
+      DateTime.now(),
+      DateTime.now(),
+    );
 
     print(jsonEncode(co));
 

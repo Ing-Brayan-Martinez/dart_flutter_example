@@ -1,48 +1,64 @@
+import 'package:dart_flutter_example/data/repository/home_repository.dart';
 import 'package:dart_flutter_example/domain/bloc/home_bloc.dart';
-import 'package:dart_flutter_example/domain/controllers/delegated/drawer/home_drawer_delegate.dart';
 import 'package:dart_flutter_example/domain/controllers/delegated/search/custom_search_delegate.dart';
+import 'package:dart_flutter_example/presentation/controllers/delegated/home_drawer_delegate.dart';
 import 'package:dart_flutter_example/domain/entity/home.dart';
 import 'package:dart_flutter_example/presentation/screens/share/application_drawer.dart';
 import 'package:dart_flutter_example/presentation/screens/share/floating_button.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   static const routeName = "/";
 
   const HomeScreen({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    final HomeBloc bloc = HomeBloc()..getHomes();
+  State<HomeScreen> createState() => _HomeScreenState();
+}
 
+class _HomeScreenState extends State<HomeScreen> {
+  late final HomeBloc bloc;
+
+  @override
+  void initState() {
+    super.initState();
+    bloc = HomeBloc(context.read<HomeRepository>())..getHomes();
+  }
+
+  @override
+  void dispose() {
+    bloc.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: const Text("Sci Fi Space"),
-          actions: <Widget>[
-            IconButton(
-              icon: const Icon(Icons.search),
-              onPressed: () {
-                showSearch(
-                  context: context,
-                  delegate: CustomSearchDelegate(),
-                );
-              },
-            ),
-          ],
-        ),
-        body: Column(
-          children: <Widget>[
-            const Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Text(
-                  'Hola',
-                  style: TextStyle(fontWeight: FontWeight.normal, fontSize: 25),
-                ),
-              ],
-            ),
-            Expanded(
-                child: StreamBuilder<List<Home>>(
+      appBar: AppBar(
+        title: const Text("Sci Fi Space"),
+        actions: <Widget>[
+          IconButton(
+            icon: const Icon(Icons.search),
+            onPressed: () {
+              showSearch(context: context, delegate: CustomSearchDelegate());
+            },
+          ),
+        ],
+      ),
+      body: Column(
+        children: <Widget>[
+          const Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Text(
+                'Hola',
+                style: TextStyle(fontWeight: FontWeight.normal, fontSize: 25),
+              ),
+            ],
+          ),
+          Expanded(
+            child: StreamBuilder<List<Home>>(
               stream: bloc.homeStream,
               // ignore: missing_return
               builder: (context, AsyncSnapshot<List<Home>> snapshot) {
@@ -66,11 +82,13 @@ class HomeScreen extends StatelessWidget {
 
                 return result;
               },
-            )),
-          ],
-        ),
-        floatingActionButton: const FloatingButton(),
-        drawer: ApplicationDrawer(delegate: HomeDrawerDelegate()));
+            ),
+          ),
+        ],
+      ),
+      floatingActionButton: const FloatingButton(),
+      drawer: ApplicationDrawer(delegate: HomeDrawerDelegate()),
+    );
   }
 
   /// Esto es para mostrar una barra

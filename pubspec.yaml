@@ -4,11 +4,12 @@ publish_to: 'none'
 version: 1.0.0
 
 environment:
-    sdk: ">=2.15.1 <3.0.0"
+    sdk: ^3.10.8
 
 dependencies:
     flutter:
         sdk: flutter
+    go_router: ^6.5.9
 
     #ui
     #animated_floatactionbuttons: ^0.1.0
@@ -31,6 +32,7 @@ dependencies:
 
     #reactive
     rxdart: ^0.27.3
+    provider: ^6.1.5+1
     #dwds: ^7.1.1
 
 dev_dependencies:

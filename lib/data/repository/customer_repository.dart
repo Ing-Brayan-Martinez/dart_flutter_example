@@ -1,16 +1,14 @@
-import 'dart:convert';
-
+import 'package:dart_flutter_example/data/memory/service/customer_memory_service.dart';
+import 'package:dart_flutter_example/data/webservice/service/customer_http_service.dart';
 import 'package:dart_flutter_example/domain/entity/customer.dart';
-import 'package:dart_flutter_example/domain/helper/provider/http.dart';
-import 'package:dio/dio.dart';
 import 'package:optional/optional.dart';
 
-abstract class ICustomerRepository {
-  void add(Customer entity);
+abstract interface class CustomerRepository {
+  Future<void> add(Customer entity);
 
-  void update(Customer entity);
+  Future<void> update(Customer entity);
 
-  void delete(List<Customer> entity);
+  Future<void> delete(List<Customer> entities);
 
   Future<List<Customer>> findAll();
 
@@ -21,126 +19,41 @@ abstract class ICustomerRepository {
   Future<List<Customer>> findByCode(String code);
 }
 
-class CustomerMemoryRepository implements ICustomerRepository {
-  final List<Customer> _list = [
-    Customer.from(1, "0101", "Epa", "Valencia, Edo Carabobo",
-        "prueba@gmail.com", "04142589632", "Y", DateTime.now(), DateTime.now()),
-    Customer.from(2, "0102", "Beco", "Valencia, Edo Carabobo",
-        "prueba@gmail.com", "04142589632", "Y", DateTime.now(), DateTime.now()),
-    Customer.from(3, "0103", "Promotora Tántalo", "Valencia, Edo Carabobo",
-        "prueba@gmail.com", "04142589632", "Y", DateTime.now(), DateTime.now()),
-    Customer.from(4, "0104", "Sillaca", "Valencia, Edo Carabobo",
-        "prueba@gmail.com", "04142589632", "Y", DateTime.now(), DateTime.now()),
-    Customer.from(5, "0105", "Febeca", "Valencia, Edo Carabobo",
-        "prueba@gmail.com", "04142589632", "Y", DateTime.now(), DateTime.now()),
-    Customer.from(6, "0106", "Beval", "Valencia, Edo Carabobo",
-        "prueba@gmail.com", "04142589632", "Y", DateTime.now(), DateTime.now()),
-  ];
+final class CustomerRepositoryImpl implements CustomerRepository {
+  CustomerRepositoryImpl(this._memoryService, this._httpService);
+
+  final CustomerMemoryService _memoryService;
+  final CustomerHttpService _httpService;
 
   @override
-  void add(Customer entity) async {
-    _list.add(entity);
+  Future<void> add(Customer entity) async {
+    await _memoryService.add(entity);
+    await _httpService.add(entity);
   }
 
   @override
-  void update(Customer entity) {
-    _list.removeWhere((el) => el.id == entity.id);
-    _list.add(entity);
+  Future<void> update(Customer entity) async {
+    await _memoryService.update(entity);
+    await _httpService.update(entity);
   }
 
   @override
-  void delete(List<Customer> entitys) async {
-    for (var item in entitys) {
-      _list.removeWhere((el) => el.id == item.id);
-    }
+  Future<void> delete(List<Customer> entitys) async {
+    await _memoryService.delete(entitys);
+    await _httpService.delete(entitys);
   }
 
   @override
-  Future<List<Customer>> findAll() async {
-    return _list;
-  }
+  Future<List<Customer>> findAll() => _memoryService.findAll();
 
   @override
-  Future<Optional<Customer>> findById(int id) async {
-    var result = _list.where((el) => el.id == id).first;
-    return Optional.ofNullable(result);
-  }
+  Future<Optional<Customer>> findById(int id) => _memoryService.findById(id);
 
   @override
-  Future<List<Customer>> findByCode(String code) async {
-    return _list.where((el) => el.code == code).toList();
-  }
+  Future<List<Customer>> findByCode(String code) =>
+      _memoryService.findByCode(code);
 
   @override
-  Future<List<Customer>> findByName(String name) async {
-    return _list.where((el) => el.name == name).toList();
-  }
-}
-
-class CustomerHttpRepository extends Http implements ICustomerRepository {
-  @override
-  void add(Customer entity) async {
-    await getHttpManager().post("/customers",
-        data: entity.toJson(),
-        options: Options(contentType: "application/json"));
-  }
-
-  @override
-  void update(Customer entity) async {
-    await getHttpManager().put("/customers",
-        data: entity.toJson(),
-        options: Options(contentType: "application/json"));
-  }
-
-  @override
-  void delete(List<Customer> entitys) async {
-    Map<String, dynamic> body = {};
-    body['customers'] = entitys.map((cli) => cli.toJson()).toList();
-
-    await getHttpManager().put("/customers/estatus",
-        data: body, options: Options(contentType: "application/json"));
-  }
-
-  @override
-  Future<List<Customer>> findAll() async {
-    final Response res = await getHttpManager().get("/customers");
-
-    final List<Customer> list = jsonDecode(res.data)
-        .map((result) => Customer.fromJson(result))
-        .toList();
-
-    return list;
-  }
-
-  @override
-  Future<Optional<Customer>> findById(int id) async {
-    final Response res = await getHttpManager().get("/customers/$id");
-
-    final Customer single =
-        jsonDecode(res.data).map((result) => Customer.fromJson(result)).single;
-
-    return Optional.ofNullable(single);
-  }
-
-  @override
-  Future<List<Customer>> findByName(String name) async {
-    final Response res = await getHttpManager().get("/customers/name/$name");
-
-    final List<Customer> list = jsonDecode(res.data)
-        .map((result) => Customer.fromJson(result))
-        .toList();
-
-    return list;
-  }
-
-  @override
-  Future<List<Customer>> findByCode(String code) async {
-    final Response res = await getHttpManager().get("/customers/code/$code");
-
-    final List<Customer> list = jsonDecode(res.data)
-        .map((result) => Customer.fromJson(result))
-        .toList();
-
-    return list;
-  }
+  Future<List<Customer>> findByName(String name) =>
+      _memoryService.findByName(name);
 }

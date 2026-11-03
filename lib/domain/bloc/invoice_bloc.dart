@@ -3,7 +3,9 @@ import 'package:dart_flutter_example/data/repository/invoice_repository.dart';
 import 'package:rxdart/rxdart.dart';
 
 class InvoiceBloc {
-  final InvoiceRepository _repository = InvoiceMemoryRepository();
+  InvoiceBloc(this._repository);
+
+  final InvoiceRepository _repository;
   final BehaviorSubject<List<Invoice>> _subject =
       BehaviorSubject<List<Invoice>>();
 
@@ -27,10 +29,10 @@ class InvoiceBloc {
     _subject.sink.add(res);
   }
 
-//  void getInvoicesByFilter(FilterInvoice filter) async {
-//    final List<Invoice> res = await _repository.findByFilter(filter);
-//    _subject.sink.add(res);
-//  }
+  //  void getInvoicesByFilter(FilterInvoice filter) async {
+  //    final List<Invoice> res = await _repository.findByFilter(filter);
+  //    _subject.sink.add(res);
+  //  }
 
   void dispose() {
     _subject.close();

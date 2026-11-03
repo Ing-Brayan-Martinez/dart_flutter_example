@@ -1,7 +1,8 @@
-import 'package:dart_flutter_example/domain/controllers/strategy/create_customer/reload_customer_create.dart';
 import 'package:dart_flutter_example/presentation/screens/customer/customer_create_screen.dart';
 import 'package:dart_flutter_example/presentation/screens/invoice/invoice_create_screen.dart';
+import 'package:dart_flutter_example/presentation/controllers/strategy/create_customer/reload_customer_create.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class FloatingButton extends StatefulWidget {
   const FloatingButton({Key? key}) : super(key: key);
@@ -20,14 +21,11 @@ class FloatingButtonState extends State<FloatingButton>
   @override
   Widget build(BuildContext context) {
     return AnimatedFloatingActionButton(
-        fabButtons: <Widget>[
-          _client(),
-          _invoice(),
-        ],
-        colorStartAnimation: Colors.blue,
-        colorEndAnimation: Colors.red,
-        animatedIconData: AnimatedIcons.menu_close //To principal button
-        );
+      fabButtons: <Widget>[_client(), _invoice()],
+      colorStartAnimation: Colors.blue,
+      colorEndAnimation: Colors.red,
+      animatedIconData: AnimatedIcons.menu_close, //To principal button
+    );
   }
 
   Widget _client() {
@@ -36,8 +34,10 @@ class FloatingButtonState extends State<FloatingButton>
       tooltip: 'Crear clientes.',
       child: const Icon(Icons.person_add),
       onPressed: () {
-        Navigator.pushNamed(context, CreateCustomerScreen.routeName,
-            arguments: ReloadCustomerCreate.HOME_STRATEGY);
+        context.push(
+          CreateCustomerScreen.routeName,
+          extra: ReloadCustomerCreate.HOME_STRATEGY,
+        );
       },
     );
   }
@@ -48,7 +48,7 @@ class FloatingButtonState extends State<FloatingButton>
       tooltip: 'Crear facturas.',
       child: const Icon(Icons.business),
       onPressed: () {
-        Navigator.pushNamed(context, CreateInvoiceScreen.routeName);
+        context.push(CreateInvoiceScreen.routeName);
       },
     );
   }
@@ -60,13 +60,13 @@ class AnimatedFloatingActionButton extends StatefulWidget {
   final Color colorEndAnimation;
   final AnimatedIconData animatedIconData;
 
-  const AnimatedFloatingActionButton(
-      {Key? key,
-      required this.fabButtons,
-      required this.colorStartAnimation,
-      required this.colorEndAnimation,
-      required this.animatedIconData})
-      : super(key: key);
+  const AnimatedFloatingActionButton({
+    Key? key,
+    required this.fabButtons,
+    required this.colorStartAnimation,
+    required this.colorEndAnimation,
+    required this.animatedIconData,
+  }) : super(key: key);
 
   @override
   _AnimatedFloatingActionButtonState createState() =>
@@ -88,41 +88,39 @@ class _AnimatedFloatingActionButtonState
     super.initState();
 
     //controller
-    _animationController = AnimationController(
-        vsync: this, duration: const Duration(milliseconds: 500))
-      ..addListener(() {
-        setState(() {});
-      });
+    _animationController =
+        AnimationController(
+          vsync: this,
+          duration: const Duration(milliseconds: 500),
+        )..addListener(() {
+          setState(() {});
+        });
 
     //change color
-    _buttonColor = ColorTween(
-      begin: widget.colorStartAnimation,
-      end: widget.colorEndAnimation,
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: const Interval(
-        0.00,
-        1.00,
-        curve: Curves.linear,
-      ),
-    ));
+    _buttonColor =
+        ColorTween(
+          begin: widget.colorStartAnimation,
+          end: widget.colorEndAnimation,
+        ).animate(
+          CurvedAnimation(
+            parent: _animationController,
+            curve: const Interval(0.00, 1.00, curve: Curves.linear),
+          ),
+        );
 
     //animate icon
-    _animateIcon =
-        Tween<double>(begin: 0.0, end: 1.0).animate(_animationController);
+    _animateIcon = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(_animationController);
 
     //animate floating button
-    _translateButton = Tween<double>(
-      begin: 56.0,
-      end: -14.0,
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: const Interval(
-        0.0,
-        0.75,
-        curve: Curves.easeOut,
+    _translateButton = Tween<double>(begin: 56.0, end: -14.0).animate(
+      CurvedAnimation(
+        parent: _animationController,
+        curve: const Interval(0.0, 0.75, curve: Curves.easeOut),
       ),
-    ));
+    );
   }
 
   @override
@@ -157,10 +155,13 @@ class _AnimatedFloatingActionButtonState
     List<Widget> processButtons = [];
 
     for (int i = 0; i < widget.fabButtons.length; i++) {
-      processButtons.add(TransformFloatButton(
-        floatButton: widget.fabButtons[i],
-        translateValue: _translateButton.value * (widget.fabButtons.length - i),
-      ));
+      processButtons.add(
+        TransformFloatButton(
+          floatButton: widget.fabButtons[i],
+          translateValue:
+              _translateButton.value * (widget.fabButtons.length - i),
+        ),
+      );
     }
     processButtons.add(getToggle());
     return processButtons;
@@ -179,18 +180,15 @@ class TransformFloatButton extends StatelessWidget {
   final Widget floatButton;
   final double translateValue;
 
-  TransformFloatButton(
-      {required this.floatButton, required this.translateValue})
-      : super(key: ObjectKey(floatButton));
+  TransformFloatButton({
+    required this.floatButton,
+    required this.translateValue,
+  }) : super(key: ObjectKey(floatButton));
 
   @override
   Widget build(BuildContext context) {
     return Transform(
-      transform: Matrix4.translationValues(
-        0.0,
-        translateValue,
-        0.0,
-      ),
+      transform: Matrix4.translationValues(0.0, translateValue, 0.0),
       child: floatButton,
     );
   }
