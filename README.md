@@ -5,9 +5,6 @@ panel de administración con pantallas de inicio, clientes y facturas. Utiliza
 GoRouter para la navegación, Provider para inyección de dependencias y servicios
 en memoria y HTTP para los datos.
 
-> Este repositorio no implementa un chat de Gemini. No incluye integración con
-> Gemini, Signals ni persistencia SQLite.
-
 ## Funcionalidades
 
 - Pantallas de inicio y administración de clientes y facturas.
