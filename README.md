@@ -1,131 +1,93 @@
-# flutter_dijkstra_example
+# Flutter Admin Demo
 
-[![Flutter](https://img.shields.io/badge/Flutter-3.38.9-blue.svg)](https://flutter.dev)
-[![Dart](https://img.shields.io/badge/Dart-3.10-blue.svg)](https://dart.dev)
-[![Signals](https://img.shields.io/badge/Signals-State%20Management-purple.svg)](https://pub.dev/packages/signals_flutter)
-[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Data%20Access-teal.svg)](https://pub.dev/packages/postgres)
-[![Supabase](https://img.shields.io/badge/Supabase-Auth-green.svg)](https://supabase.com)
+Aplicación de ejemplo multiplataforma construida con Flutter para explorar un
+panel de administración con pantallas de inicio, clientes y facturas. Utiliza
+GoRouter para la navegación, Provider para inyección de dependencias y servicios
+en memoria y HTTP para los datos.
 
-Aplicación y panel de administración multiplataforma (Desktop, Mobile, Web) desarrollada con **Flutter 3.38.9** y **Dart ^3.10** para **French's Gold ERP**, implementando una **Arquitectura Reactiva en Capas** con gestión de estado mediante **Signals**, inyección de dependencias con **GetX** y persistencia sobre **PostgreSQL**.
+> Este repositorio no implementa un chat de Gemini. No incluye integración con
+> Gemini, Signals ni persistencia SQLite.
 
----
+## Funcionalidades
 
-## 🚀 Características Principales
+- Pantallas de inicio y administración de clientes y facturas.
+- Navegación declarativa con GoRouter y transiciones entre pantallas.
+- Inyección de servicios y repositorios con Provider.
+- Datos de ejemplo mantenidos en memoria durante la ejecución de la aplicación.
+- Servicios HTTP basados en Dio para sincronizar las escrituras con un backend.
+- Tema Material 3 y localización de interfaz en español.
 
-- **Gestión de Estado Reactiva:** Implementación estricta y reactiva mediante **Signals** (`signals_flutter`).
-- **Navegación & Deep Linking:** Enrutamiento declarativo multiplataforma utilizando **GoRouter**.
-- **Inyección de Dependencias:** Gestión limpia de dependencias con **GetX** usado exclusivamente vía `Bindings`.
-- **Acceso Asíncrono a PostgreSQL:** Persistencia directa y no bloqueante mediante el paquete `postgres`, protegida concurrentemente con `Mutex`.
-- **Autenticación e Inicialización:** Integración fluida con **Supabase** (`supabase_flutter`).
-- **Logging Unificado:** Monitoreo y trazabilidad de eventos estructurado con **Signale** (`signale`).
-- **Soporte Multiplataforma:** Soporte optimizado para Desktop (Windows, macOS, Linux vía `window_manager`), Web y Mobile.
-- **Integración con IA / Agentes:** Sistema modular de *Skills* en `.agents/skills/` e instrucciones centralizadas en `AGENTS.md`.
+## Tecnologías
 
----
+| Área | Tecnología |
+| --- | --- |
+| Framework | Flutter |
+| Lenguaje | Dart `^3.10.8` |
+| Navegación | GoRouter |
+| Inyección de dependencias | Provider |
+| Estado reactivo | RxDart |
+| HTTP | Dio |
+| Pruebas | Flutter Test |
 
-## 🛠️ Stack Tecnológico
-
-| Componente | Tecnología | Versión / Detalle |
-| :--- | :--- | :--- |
-| **Lenguaje & Runtime** | Dart | `^3.10` |
-| **Framework Base** | Flutter | `3.38.9` |
-| **Gestión de Estado** | Signals | `signals_flutter` (Estándar obligatorio) |
-| **Navegación** | GoRouter | Routing declarativo y deep links |
-| **Inyección de Dependencias** | GetX | `Bindings` (Uso exclusivo para DI) |
-| **Autenticación** | Supabase | `supabase_flutter` |
-| **Base de Datos** | PostgreSQL direct | `postgres` (Con `Mutex` por servicio) |
-| **Logging** | Signale | `signale` (`Log.i`, `Log.e`, `Log.d`) |
-| **Configuración** | Flutter Dotenv | `flutter_dotenv` (`.env` asset) |
-| **Gestión de Ventanas** | Window Manager | `window_manager` (Desktop: Win/macOS/Linux) |
-| **Manejo de Nulos** | Optional | `optional` (Null-handling seguro en capa de datos) |
-
----
-
-## 📂 Arquitectura del Proyecto
-
-El proyecto sigue una arquitectura reactiva en capas con separación estricta de responsabilidades:
+## Estructura
 
 ```text
-flutter_dijkstra_example/
-├── .agents/skills/            # Skills y guías de conocimiento modular para agentes de IA
-├── .github/workflows/         # Pipelines de CI/CD para despliegue automatizado
-├── lib/
-│   ├── data/                  # Repositorios e implementación PostgreSQL
-│   │   ├── postgresql/
-│   │   │   ├── configuration/ # Configuración de conexión a PostgreSQL
-│   │   │   └── service/       # Servicios de consultas SQL (con Mutex)
-│   │   └── repository/        # Implementación concreta de repositorios
-│   ├── domain/                # Capa pura Dart (Sin dependencias de Flutter/GetX)
-│   │   ├── config/            # Helpers de Mutex, Log, Context, PostgreSQL
-│   │   ├── controllers/       # Lógica de negocio reactiva (Signals)
-│   │   └── model/             # Entidades de dominio
-│   └── presentation/          # Capa de Interfaz de Usuario y Rutas
-│       ├── routes/            # Configuración de GoRouter (app_routes.dart)
-│       ├── screens/           # Pantallas (StatefulWidget + Watch / SignalBuilder)
-│       ├── theme/             # Estilos y tema visual (Dark mode por defecto)
-│       └── widgets/           # Componentes de UI reutilizables
-├── .env                       # Variables de entorno (Supabase URL / Key)
-├── AGENTS.md                  # Instrucciones y directrices para agentes IA y desarrolladores
-├── analysis_options.yaml      # Reglas del analizador estático de Dart
-└── pubspec.yaml               # Configuración de dependencias y assets Flutter
+lib/
+├── data/
+│   ├── memory/                 # Servicios de datos en memoria
+│   ├── repository/             # Repositorios que coordinan las fuentes
+│   └── webservice/             # Cliente HTTP y servicios Dio
+├── domain/
+│   ├── bloc/                   # Streams y lógica de presentación de datos
+│   ├── entity/                 # Entidades de clientes, facturas e inicio
+│   ├── dto/                    # Objetos de transferencia y filtros
+│   └── event/                  # Eventos de interacción
+└── presentation/
+    ├── provider/               # Registro de dependencias
+    ├── routes/                 # Rutas GoRouter
+    ├── screens/                # Pantallas y componentes
+    └── theme/                  # Tema de la aplicación
 ```
 
----
+### Flujo de datos
 
-## 📡 Módulos y Flujos del Sistema
+Las pantallas obtienen sus repositorios desde Provider. Las consultas de los
+repositorios usan los servicios en memoria. Las operaciones de escritura
+actualizan primero la memoria y después envían la operación al backend por HTTP;
+si la petición falla, el error se propaga y la modificación local no se revierte.
+Los datos en memoria no sobreviven al cierre de la aplicación.
 
-La aplicación expone y gestiona diferentes flujos reactivos mediante controladores en el dominio:
+El backend y los timeouts HTTP se configuran en
+[`lib/data/webservice/configuration/http.dart`](lib/data/webservice/configuration/http.dart).
+Configura allí una dirección accesible desde el dispositivo o emulador antes de
+probar la sincronización.
 
-### 👤 Módulo de Usuarios & Autenticación
-- **Inicio de Sesión:** Manejado a través de Supabase y `SplashScreen`.
-- **Carga de Usuarios:** Gestión reactiva con `GetUserDataModel` y Signals.
+## Requisitos
 
-### 📱 Módulo de Dispositivos & Entidades
-- **Transacciones de Datos:** Operaciones protegidas mediante `TransactionHelper` (`beginTransaction`, `commit`, `rollback`).
-- **Consultas PostgreSQL:** Métodos asíncronos aislados concurrentemente mediante `Mutex`.
+- Flutter SDK compatible con la restricción de Dart del proyecto (`^3.10.8`).
+- Backend HTTP disponible para probar las escrituras sincronizadas.
 
----
+## Ejecutar
 
-## ⚙️ Guía de Inicio Rápido
+Desde la raíz del proyecto:
 
-### Requisitos Previos
-- **Flutter SDK 3.38.9** (Dart ^3.10)
-- Archivo `.env` configurado en la raíz con las credenciales necesarias:
-  ```env
-  SUPABASE_URL=https://tu-proyecto.supabase.co
-  SUPABASE_KEY=tu-clave-supabase
-  ```
-
-### 1. Obtener Dependencias
 ```bash
 flutter pub get
-```
-
-### 2. Validar Calidad del Código (Analizador Estático)
-```bash
-flutter analyze
-```
-
-### 3. Aplicar Formato Estándar de Código
-```bash
-dart format lib/
-```
-
-### 4. Ejecutar la Aplicación
-```bash
-# Ejecutar en el dispositivo predeterminado
 flutter run
-
-# Ejecutar en plataformas específicas
-flutter run -d macos
-flutter run -d windows
-flutter run -d chrome
 ```
 
----
+Para seleccionar un dispositivo o plataforma:
 
-## 📖 Guías para Desarrolladores y Agentes
+```bash
+flutter devices
+flutter run -d <device-id>
+```
 
-Para más detalles sobre reglas críticas, arquitectura de capas, patrones de diseño e integración de *Skills*, consulta el archivo de instrucciones centralizado:
+## Verificar
 
-- [AGENTS.md](AGENTS.md) — Guía completa de arquitectura, reglas críticas y desarrollo.
+```bash
+dart format lib/ test/
+flutter analyze
+flutter test
+```
+
