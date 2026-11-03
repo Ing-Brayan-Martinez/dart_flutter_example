@@ -1,5 +1,5 @@
-import 'package:dart_flutter_example/screens/data/data_screen.dart';
-import 'package:dart_flutter_example/screens/home/home_screen.dart';
+import 'package:dart_flutter_example/presentation/screens/data/data_screen.dart';
+import 'package:dart_flutter_example/presentation/screens/home/home_screen.dart';
 import 'package:flutter/material.dart';
 
 /// Correr la aplicación
